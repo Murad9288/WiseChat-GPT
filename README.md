@@ -26,7 +26,7 @@ Go to the link of these <a href="https://platform.openai.com/account/api-keys" t
 
 | Save History | History Delete System 1 | History Second System 2 | Histoy Details | 
 |---|---|---|---|
-|<img src="./Image sample/10.png" width='200px'/>|<img src="./Image sample/16.png" width='200px'/> | <img src="./Image sample/17.png" width='200px'/>| <img src="./Image sample/11.png" width='200px'/>|
+|<img src="./Image sample/10.png" width='200px'/>|<img src="./Image sample/16.png" width='200px'/> | <img src="./Image sample/17.png" width='200px'/>| <img src="./Image sample/18.png" width='200px'/>|
 
 | Settings | App Term | Exmaple Questions | Capability Conditions |
 |---|---|---|---|
