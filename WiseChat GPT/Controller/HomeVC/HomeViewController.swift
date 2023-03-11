@@ -64,8 +64,8 @@ class HomeViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         TypingLoaderAnimation()
+
     }
-    
     
     // MARK: - Private method
     
@@ -192,7 +192,6 @@ class HomeViewController: UIViewController {
             } else {
                 currentUtterance.stopSpeaking(at: AVSpeechBoundary.immediate)
             }
-            
         })
         let speakerImage = UIImage(systemName: "speaker.3")
         if let speakerImage = speakerImage?.imageWithSize(scaledToSize: CGSize(width: 36, height: 28)) {
@@ -211,7 +210,6 @@ class HomeViewController: UIViewController {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 self.copyTextLabel.isHidden = true
             }
-
         })
         
         let copyImage = UIImage(systemName: "doc.on.doc")
@@ -376,6 +374,7 @@ class HomeViewController: UIViewController {
     }
     
     @IBAction func noteActionButton(_ sender: UIButton) {
+
         let st = UIStoryboard(name: "Term", bundle: nil)
         let vc = st.instantiateViewController(withIdentifier: "TermViewController") as! TermViewController
         vc.modalPresentationStyle = .fullScreen
@@ -388,7 +387,6 @@ class HomeViewController: UIViewController {
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
-    
 }
 
 /// UITableView Delegate and DataSource
@@ -648,3 +646,4 @@ extension UIAlertController {
 //        }
 //    }
 //}
+

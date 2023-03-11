@@ -61,6 +61,7 @@ extension HistoryDetailsViewController: UITableViewDelegate, UITableViewDataSour
             cell.robotTextLabel.isHidden = true
             cell.robotImageView.isHidden = true
             cell.robotView.isHidden = true
+            cell.robotTextLabel.text = ""
             return cell
             
         } else {
@@ -80,6 +81,7 @@ extension HistoryDetailsViewController: UITableViewDelegate, UITableViewDataSour
             cell.robotTextLabel.isHidden = false
             cell.robotImageView.isHidden = false
             cell.robotView.isHidden = false
+            cell.userLabel.text = ""
             return cell
         }
     }

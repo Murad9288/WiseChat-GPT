@@ -58,14 +58,14 @@ class HistoryViewController: UIViewController {
     }
     
     func convertDateFormat(inputDate: String) -> String {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
-        dateFormatter.locale = Locale(identifier: "es_US_POSIX")
-        dateFormatter.timeZone = TimeZone(secondsFromGMT: 0)
-        dateFormatter.date(from: inputDate)
-        return inputDate
+        let olDateFormatter = DateFormatter()
+        olDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        
+        let oldDate = olDateFormatter.date(from: inputDate)
+        let convertDateFormatter = DateFormatter()
+        convertDateFormatter.dateFormat = "MMM dd yyyy h:mm a"
+        return convertDateFormatter.string(from: oldDate!)
     }
-
         
     @IBAction func historyBackActionButton(_ sender: UIButton) {
         self.dismiss(animated: true)
@@ -85,14 +85,18 @@ extension HistoryViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let historyQuestion = historyArray[indexPath.row]
-        let historyDate = "\(historyArray[indexPath.row].createdAt!)"
-        let date = convertDateFormat(inputDate: historyDate)
         let cell = historyTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! HistoryTableViewCell
+        let historyQuestion = historyArray[indexPath.row]
+        var historyDate = "\(historyArray[indexPath.row].createdAt!)"
+        let dateFormatterGet = DateFormatter()
+        dateFormatterGet.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        let dateFormatterPrint = DateFormatter()
+        dateFormatterPrint.dateFormat = "EE, dd MMMM yyyy   h:mm:ss a"
+        let datee = dateFormatterGet.date(from: historyDate)
+        historyDate =  dateFormatterPrint.string(from: datee ?? Date())
         cell.historyLabel.text = historyQuestion.question
-        print(historyQuestion)
-        cell.timeLabelAdd.text = date
         cell.historylabelBGView.layer.cornerRadius = 15
+        cell.timeLabelAdd.text = historyDate
         return cell
     }
     
@@ -132,7 +136,6 @@ extension HistoryViewController: UITableViewDelegate, UITableViewDataSource {
                     image: UIImage(systemName: "clear")) { _ in
                     }
                 return UIMenu(title: "Are you sure that this message delete!", image: nil, children: [done,cancle])
-
             }
     }
     

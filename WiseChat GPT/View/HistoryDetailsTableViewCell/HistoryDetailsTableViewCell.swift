@@ -23,39 +23,20 @@ class HistoryDetailsTableViewCell: UITableViewCell {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-//        maksToCornerRound()
+        
+//        userbgGradientViewColor()
+//        ChatGPTbgGradientViewColor()
 
     }
     
-    // Maks to cornersRound Function
-    func maksToCornerRound() {
+    override func layoutSublayers(of layer: CALayer) {
+        super.layoutSublayers(of: layer)
         if userLabel.text!.count < 28 && robotTextLabel.text!.count < 28 {
-            let rectShape = CAShapeLayer()
-
-            rectShape.bounds = robotView.frame
-            rectShape.position = robotView.center
-            rectShape.path = UIBezierPath(roundedRect: robotView.bounds,    byRoundingCorners: [.topLeft , .topRight, .bottomRight], cornerRadii: CGSize(width: 10, height: 10)).cgPath
-            robotView.layer.mask = rectShape
-            
-            let rectShape2 = CAShapeLayer()
-            rectShape2.frame = userView.frame
-            rectShape2.position = userView.center
-            rectShape2.path = UIBezierPath(roundedRect: userView.bounds,    byRoundingCorners: [.topLeft , .topRight, .bottomLeft], cornerRadii: CGSize(width: 10, height: 10)).cgPath
-            userView.layer.mask = rectShape2
-            
+            userView.roundCorners(corners: [.topRight, .bottomLeft, .topLeft], radius: 10)
+            robotView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 10)
         } else {
-            let rectShape3 = CAShapeLayer()
-
-            rectShape3.frame = robotView.frame
-//            rectShape.position = robotView.center
-            rectShape3.path = UIBezierPath(roundedRect: robotView.bounds,    byRoundingCorners: [.topLeft , .topRight, .bottomRight], cornerRadii: CGSize(width: 15, height: 15)).cgPath
-            robotView.layer.mask = rectShape3
-            
-            let rectShape4 = CAShapeLayer()
-            rectShape4.frame = userView.frame
-            rectShape4.position = userView.center
-            rectShape4.path = UIBezierPath(roundedRect: userView.bounds,    byRoundingCorners: [.topLeft , .topRight, .bottomLeft], cornerRadii: CGSize(width: 15, height: 15)).cgPath
-            userView.layer.mask = rectShape4
+            userView.roundCorners(corners: [.topRight, .bottomLeft, .topLeft], radius: 15)
+            robotView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 15)
         }
     }
     

@@ -58,7 +58,7 @@
                                     <constraint firstAttribute="height" constant="12" id="Day-zA-gGA"/>
                                     <constraint firstAttribute="width" constant="208" id="Tqu-v9-imA"/>
                                 </constraints>
-                                <fontDescription key="fontDescription" type="boldSystem" pointSize="10"/>
+                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="12"/>
                                 <color key="textColor" red="1" green="0.19766298534913296" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
                                 <nil key="highlightedColor"/>
                             </label>

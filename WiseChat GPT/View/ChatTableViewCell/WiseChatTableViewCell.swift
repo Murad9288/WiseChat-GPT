@@ -21,7 +21,6 @@ class WiseChatTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        
     }
     
     override func layoutSubviews() {
@@ -33,16 +32,11 @@ class WiseChatTableViewCell: UITableViewCell {
             userBGView.roundCorners(corners: [.topRight, .bottomLeft, .topLeft], radius: 15)
             chatAnswerbgcellView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 15)
         }
-//        userbgGradientViewColor()
-//        ChatGPTbgGradientViewColor()
-
     }
-    
     
     func userbgGradientViewColor() {
         let colorTop =  UIColor(red: 15.0/255.0, green: 118.0/255.0, blue: 128.0/255.0, alpha: 1.0).cgColor
         let colorBottom = UIColor(red: 84.0/255.0, green: 187.0/255.0, blue: 187.0/255.0, alpha: 1.0).cgColor
-        
         
         let gradientLayer = CAGradientLayer()
         gradientLayer.colors = [colorTop, colorBottom]
