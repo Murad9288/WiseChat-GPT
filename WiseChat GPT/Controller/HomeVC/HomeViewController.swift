@@ -10,6 +10,7 @@ import Vision
 import AVFoundation
 import AVFAudio
 
+
 class HomeViewController: UIViewController {
 
     @IBOutlet weak var wiseChatTextView: UITextView!
@@ -19,6 +20,9 @@ class HomeViewController: UIViewController {
     @IBOutlet weak var bgView: UIView!
     @IBOutlet weak var textBGView: UIView!
     @IBOutlet weak var sendButtonHide: UIButton!
+    @IBOutlet weak var speakerStopButton: UIButton!
+    @IBOutlet weak var indicatorLabel: UIImageView!
+    
     
     var activityView: UIActivityIndicatorView?
     let scanLoderView: UIView = UIView()
@@ -33,23 +37,10 @@ class HomeViewController: UIViewController {
     var answerNumberCount = 0
     var keyboradHeight = 0
     let animation = DotsAnimation()
-    var currentUtterance = AVSpeechSynthesizer()
+    let synthesizer = AVSpeechSynthesizer()
+
 
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext // core data shared item
-
-    lazy var copyTextLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Copeid!"
-        label.textColor = .black
-        label.textAlignment = .center
-        label.numberOfLines = .zero
-        label.backgroundColor = .white
-        label.layer.cornerRadius = 10
-        label.font = UIFont.systemFont(ofSize: 25)
-        return label
-    }()
-
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -58,7 +49,6 @@ class HomeViewController: UIViewController {
         setupUI()
         showActivityIndicatory()
         keyBoardHeightGet()
-//        getAllItem()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -107,6 +97,14 @@ class HomeViewController: UIViewController {
         typingLoaderView.isHidden = true
         typingLoaderView.layer.cornerRadius = 10
     }
+        
+    
+    func speak(_ text: String) {
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-AI")
+        synthesizer.speak(utterance)
+    }
+
     
 /// Scanner Activity Indicator
     private func showActivityIndicatory() {
@@ -176,39 +174,46 @@ class HomeViewController: UIViewController {
         let titleAttributes = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Bold", size: 20)!, NSAttributedString.Key.foregroundColor: UIColor.black]
         let messageAttributes = [NSAttributedString.Key.font: UIFont(name: "HelveticaNeue-Bold", size: 16)!, NSAttributedString.Key.foregroundColor: UIColor.black]
         let titleString = NSAttributedString(string: "- Details -", attributes: titleAttributes)
-        let messageString = NSAttributedString(string: "Answer Number: \(answerNumberCount)", attributes: messageAttributes)
+        let messageString = NSAttributedString(string: "Click Answer Number: \(answerNumberCount)", attributes: messageAttributes)
         optionMenu.setValue(titleString, forKey: "attributedTitle")
         optionMenu.setValue(messageString, forKey: "attributedMessage")
         
         let speakerAction = UIAlertAction(title: "Speaker", style: .default, handler: { [self]
             (alert: UIAlertAction!) -> Void in
-            if !currentUtterance.isSpeaking {
-                let speakText = AVSpeechUtterance(string: chat[selectIndexNumber])
-                speakText.voice = AVSpeechSynthesisVoice(language: "en-AI")
-                speakText.rate = 0.5
-                let synth = AVSpeechSynthesizer()
-    //            synth.replacementObject(for: chat[selectIndexNumber])
-                synth.speak(speakText)
-            } else {
-                currentUtterance.stopSpeaking(at: AVSpeechBoundary.immediate)
+            
+            synthesizer.stopSpeaking(at: .immediate)
+            UIView.animate(withDuration: 0.3){ [self] in
+                speakerStopButton.isHidden = false
+                loadViewIfNeeded()
+            }
+            let text = chat[selectIndexNumber]
+            speak(text)
+            
+            self.indicatorLabel.image = UIImage(named: "SpeakerOn")
+            self.indicatorLabel.isHidden = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                self.indicatorLabel.isHidden = true
             }
         })
+        
         let speakerImage = UIImage(systemName: "speaker.3")
         if let speakerImage = speakerImage?.imageWithSize(scaledToSize: CGSize(width: 36, height: 28)) {
             speakerAction.setValue(speakerImage, forKey: "image")
         }
-          
+
         let copyAction = UIAlertAction(title: "Copy", style: .default, handler: { [self]
             (alert: UIAlertAction!) -> Void in
-            wiseChatTableView.addSubview(copyTextLabel)
+            
+            synthesizer.stopSpeaking(at: .immediate)
+            UIView.animate(withDuration: 0.3){ [self] in
+                speakerStopButton.isHidden = true
+                loadViewIfNeeded()
+            }
             UIPasteboard.general.string = chat[selectIndexNumber]
-            copyTextLabel.layer.cornerRadius = 20
-            copyTextLabel.widthAnchor.constraint(equalToConstant: 200).isActive = true
-            copyTextLabel.heightAnchor.constraint(equalToConstant: 100).isActive = true
-            copyTextLabel.centerXAnchor.constraint(equalTo: wiseChatTableView.centerXAnchor).isActive = true
-            copyTextLabel.centerYAnchor.constraint(equalTo: wiseChatTableView.centerYAnchor).isActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                self.copyTextLabel.isHidden = true
+            self.indicatorLabel.image = UIImage(named: "Copied")
+            self.indicatorLabel.isHidden = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                self.indicatorLabel.isHidden = true
             }
         })
         
@@ -219,9 +224,21 @@ class HomeViewController: UIViewController {
         
         let saveAction = UIAlertAction(title: "Save", style: .default, handler: { [self]
             (alert: UIAlertAction!) -> Void in
+            
+            self.indicatorLabel.image = UIImage(named: "saved")
+            self.indicatorLabel.isHidden = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+                self.indicatorLabel.isHidden = true
+            }
+            
+            synthesizer.stopSpeaking(at: .immediate)
+            UIView.animate(withDuration: 0.3){ [self] in
+                speakerStopButton.isHidden = true
+                loadViewIfNeeded()
+            }
+
             DatabaseHelper.shareInstance.createItem(question: questionText, answer: answerText.replacingOccurrences(of: "\n\n", with: ""))
             try? DatabaseHelper.shareInstance.context?.save()
-
         })
         
         let saveImage = UIImage(systemName: "text.badge.plus")
@@ -231,7 +248,15 @@ class HomeViewController: UIViewController {
         
         let shareAction = UIAlertAction(title: "Share", style: .default, handler: { [self]
             (alert: UIAlertAction!) -> Void in
-            let shareAll = [chat[selectIndexNumber]]
+           
+            synthesizer.stopSpeaking(at: .immediate)
+            UIView.animate(withDuration: 0.3){ [self] in
+                speakerStopButton.isHidden = true
+                loadViewIfNeeded()
+            }
+
+            let questionText = "Question: \(chat[selectIndexNumber-1])\n\nAnswer: \(chat[selectIndexNumber])"
+            let shareAll = [questionText]
             let activityViewController = UIActivityViewController(activityItems: shareAll as [Any], applicationActivities: nil)
             activityViewController.popoverPresentationController?.sourceView = self.view
             self.present(activityViewController, animated: true, completion: nil)
@@ -246,7 +271,6 @@ class HomeViewController: UIViewController {
             (alert: UIAlertAction!) -> Void in
         })
         cancelAction.setValue(UIColor.red, forKey: "titleTextColor")
-        
         optionMenu.addAction(speakerAction)
         optionMenu.addAction(copyAction)
         optionMenu.addAction(saveAction)
@@ -268,7 +292,10 @@ class HomeViewController: UIViewController {
         wiseChatTextView.delegate = self
         wiseChatTextView.textColor = UIColor.black
         bgView.backgroundColor = #colorLiteral(red: 0.1824988425, green: 0.192479372, blue: 0.1879994869, alpha: 1)
+        speakerStopButton.isHidden = true
+        synthesizer.delegate = self
         keyboardTapToHide()
+        self.indicatorLabel.isHidden = true
         bgView.isUserInteractionEnabled = true
 
     }
@@ -332,6 +359,12 @@ class HomeViewController: UIViewController {
     
     /// Scanner Action Button
     @IBAction func wiseChatScannerActionButton(_ sender: UIButton) {
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerStopButton.isHidden = true
+            loadViewIfNeeded()
+        }
+
         let imagePhotoLibraryPicker = UIImagePickerController()
         imagePhotoLibraryPicker.delegate = self
         imagePhotoLibraryPicker.allowsEditing = true
@@ -343,6 +376,12 @@ class HomeViewController: UIViewController {
     /// Send Action Button
     @IBAction func wiseChatSendButtonAction(_ sender: UIButton) {
         wiseChatTextView.resignFirstResponder()
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerStopButton.isHidden = true
+            loadViewIfNeeded()
+        }
+
         if wiseChatTextView.text.count > 0 {
             let promptText = wiseChatTextView.text
             self.fetchChatGPTForResponse(prompt: promptText!)
@@ -358,7 +397,7 @@ class HomeViewController: UIViewController {
             placeHolderTextLabel.isHidden = false
             wiseChatTextView.text = ""
         } else {
-            let alert = UIAlertController(title: "No question!", message: "You didn't ask any questions. Please enter your question in the Text-Field.", preferredStyle: UIAlertController.Style.alert)
+            let alert = UIAlertController(title: "Oops!", message: "You didn't ask any questions. Please enter your question in the Text-Field.", preferredStyle: UIAlertController.Style.alert)
             alert.addAction(UIAlertAction(title: "Ok", style: UIAlertAction.Style.default, handler: nil))
             alert.view.tintColor = .red
             self.present(alert, animated: true, completion: nil)
@@ -367,23 +406,52 @@ class HomeViewController: UIViewController {
     
     /// Settings Action Button
     @IBAction func settingsButtonAction(_ sender: UIButton) {
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerStopButton.isHidden = true
+            loadViewIfNeeded()
+        }
+
         let st = UIStoryboard(name: "Settings", bundle: nil)
         let vc = st.instantiateViewController(withIdentifier: "SettingsViewController")
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
+
     }
     
     @IBAction func noteActionButton(_ sender: UIButton) {
-
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerStopButton.isHidden = true
+            loadViewIfNeeded()
+        }
+        
         let st = UIStoryboard(name: "Term", bundle: nil)
         let vc = st.instantiateViewController(withIdentifier: "TermViewController") as! TermViewController
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
+        
     }
+    
+    @IBAction func speackerTextStopActionButton(_ sender: UIButton) {
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerStopButton.isHidden = true
+            loadViewIfNeeded()
+        }
+    }
+
     
     @IBAction func historyActionButton(_ sender: UIButton) {
         let st = UIStoryboard(name: "History", bundle: nil)
         let vc = st.instantiateViewController(withIdentifier: "HistoryViewController") as! HistoryViewController
+        
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerStopButton.isHidden = true
+            loadViewIfNeeded()
+        }
+        
         vc.modalPresentationStyle = .fullScreen
         self.present(vc, animated: true)
     }
@@ -605,6 +673,17 @@ extension UIAlertController {
     //Set tint color of UIAlertController
     func setTint(color: UIColor) {
         self.view.tintColor = color
+    }
+}
+
+/// Speaker text didfinish notification
+
+extension HomeViewController: AVSpeechSynthesizerDelegate {
+    func speechSynthesizer(_ synthesizer: AVSpeechSynthesizer, didFinish utterance: AVSpeechUtterance) {
+        UIView.animate(withDuration: 0.4) { [self] in
+//            speakerStopButton.isHidden = true
+            loadViewIfNeeded()
+        }
     }
 }
 

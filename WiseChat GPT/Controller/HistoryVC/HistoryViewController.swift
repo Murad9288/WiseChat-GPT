@@ -42,6 +42,7 @@ class HistoryViewController: UIViewController {
         if let data = try? context?.fetch(MessageItemList.fetchRequest()) {
             historyArray = data
             historyArray.sort{$0.createdAt! > $1.createdAt! }
+            
             DispatchQueue.main.async {
                 self.historyTableView.reloadData()
             }
@@ -56,17 +57,7 @@ class HistoryViewController: UIViewController {
             historyEmtyLabel.isHidden = false
         }
     }
-    
-    func convertDateFormat(inputDate: String) -> String {
-        let olDateFormatter = DateFormatter()
-        olDateFormatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        
-        let oldDate = olDateFormatter.date(from: inputDate)
-        let convertDateFormatter = DateFormatter()
-        convertDateFormatter.dateFormat = "MMM dd yyyy h:mm a"
-        return convertDateFormatter.string(from: oldDate!)
-    }
-        
+
     @IBAction func historyBackActionButton(_ sender: UIButton) {
         self.dismiss(animated: true)
     }
@@ -87,13 +78,13 @@ extension HistoryViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = historyTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! HistoryTableViewCell
         let historyQuestion = historyArray[indexPath.row]
-        var historyDate = "\(historyArray[indexPath.row].createdAt!)"
-        let dateFormatterGet = DateFormatter()
-        dateFormatterGet.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        let dateFormatterPrint = DateFormatter()
-        dateFormatterPrint.dateFormat = "EE, dd MMMM yyyy   h:mm:ss a"
-        let datee = dateFormatterGet.date(from: historyDate)
-        historyDate =  dateFormatterPrint.string(from: datee ?? Date())
+        let historyDate = "\(historyArray[indexPath.row].createdAt!)"
+//        let dateFormatterGet = DateFormatter()
+//        dateFormatterGet.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+//        let dateFormatterPrint = DateFormatter()
+//        dateFormatterPrint.dateFormat = "EE, dd MMMM yyyy   h:mm:ss a"
+//        historyDate = dateFormatterGet.string(from: "\(historyDate)")
+//        historyDate =  dateFormatterPrint.string(from: datee ?? Date())
         cell.historyLabel.text = historyQuestion.question
         cell.historylabelBGView.layer.cornerRadius = 15
         cell.timeLabelAdd.text = historyDate

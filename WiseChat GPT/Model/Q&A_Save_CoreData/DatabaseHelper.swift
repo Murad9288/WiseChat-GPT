@@ -28,13 +28,6 @@ class DatabaseHelper {
         newItem.question = question
         newItem.answer = answer
         newItem.createdAt = Date()
-        var date = "\(newItem.createdAt!)"
-        let dateFormatterGet = DateFormatter()
-        dateFormatterGet.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-        let dateFormatterPrint = DateFormatter()
-        dateFormatterPrint.dateFormat = "EE, dd MMMM yyyy   h:mm:ss a"
-        let datee = dateFormatterGet.date(from:  date)
-        date = dateFormatterPrint.string(from: datee ?? Date())
         
         do {
             try context!.save()
