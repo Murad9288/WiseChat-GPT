@@ -79,13 +79,15 @@ extension HistoryViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = historyTableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! HistoryTableViewCell
         let historyQuestion = historyArray[indexPath.row]
-        let historyDate = "\(historyArray[indexPath.row].createdAt!)"
-//        let dateFormatterGet = DateFormatter()
-//        dateFormatterGet.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
-//        let dateFormatterPrint = DateFormatter()
-//        dateFormatterPrint.dateFormat = "EE, dd MMMM yyyy   h:mm:ss a"
-//        historyDate = dateFormatterGet.string(from: "\(historyDate)")
-//        historyDate =  dateFormatterPrint.string(from: datee ?? Date())
+        var historyDate = "\(historyArray[indexPath.row].createdAt!)"
+        
+        let dateFormatterGet = DateFormatter()
+        dateFormatterGet.dateFormat = "yyyy-MM-dd'T'HH:mm:ss"
+        let dateFormatterPrint = DateFormatter()
+        dateFormatterPrint.dateFormat = "EE,dd MMM, yyyy  h:mm a"  //"MMM d, h:mm a" for  Sep 12, 2:11 PM
+        let datee = dateFormatterGet.date(from: historyDate)
+        historyDate =  dateFormatterPrint.string(from: datee ?? Date())
+
         cell.historyLabel.text = historyQuestion.question
         cell.historylabelBGView.layer.cornerRadius = 15
         cell.timeLabelAdd.text = historyDate

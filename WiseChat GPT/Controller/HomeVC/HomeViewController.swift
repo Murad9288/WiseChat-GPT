@@ -238,6 +238,7 @@ class HomeViewController: UIViewController {
             }
 
             DatabaseHelper.shareInstance.createItem(question: questionText, answer: answerText.replacingOccurrences(of: "\n\n", with: ""))
+            
             try? DatabaseHelper.shareInstance.context?.save()
         })
         

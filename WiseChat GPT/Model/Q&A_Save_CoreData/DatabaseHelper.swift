@@ -28,7 +28,6 @@ class DatabaseHelper {
         newItem.question = question
         newItem.answer = answer
         newItem.createdAt = Date()
-        
         do {
             try context!.save()
            // getAllItem()

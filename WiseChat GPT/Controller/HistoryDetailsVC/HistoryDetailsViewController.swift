@@ -52,6 +52,11 @@ class HistoryDetailsViewController: UIViewController {
 
 
     @IBAction func detailsBackButtonAction(_ sender: UIButton) {
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerSilentButton.isHidden = true
+            loadViewIfNeeded()
+        }
         self.dismiss(animated: true, completion: nil)
     }
     
@@ -80,6 +85,13 @@ class HistoryDetailsViewController: UIViewController {
     }
     
     @IBAction func DetailsTextCopyActionbutton(_ sender: UIButton) {
+        
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerSilentButton.isHidden = true
+            loadViewIfNeeded()
+        }
+        
         UIPasteboard.general.string = answerDetails
         self.indicatorImageView.image = UIImage(named: "Copied")
         self.indicatorImageView.isHidden = false
@@ -89,6 +101,12 @@ class HistoryDetailsViewController: UIViewController {
     }
     
     @IBAction func DetailsTextshareActionbutton(_ sender: UIButton) {
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerSilentButton.isHidden = true
+            loadViewIfNeeded()
+        }
+        
         let questionText = "Question: \(questionDetails)\n\nAnswer: \(answerDetails)"
         let shareAll = [questionText]
         let activityViewController = UIActivityViewController(activityItems: shareAll as [Any], applicationActivities: nil)
