@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 var selectHistoryItemIndex = 0
 
@@ -111,8 +112,8 @@ extension HistoryViewController: UITableViewDelegate, UITableViewDataSource {
             identifier: identifier,
             previewProvider: nil) { [self] _ in
                 let done = UIAction(
-                    title: "Done",
-                    image: UIImage(systemName: "trash")) { [self] _ in
+                    title: "Delete",
+                    image: UIImage(systemName: "trash"), attributes: .destructive) { [self] _ in
                         
                         let index = [IndexPath(row: indexPath.row, section: 0)]
 

@@ -222,7 +222,7 @@ class HomeViewController: UIViewController {
             copyAction.setValue(copyImage, forKey: "image")
         }
         
-        let saveAction = UIAlertAction(title: "Save", style: .default, handler: { [self]
+        let saveAction = UIAlertAction(title: "Save history", style: .default, handler: { [self]
             (alert: UIAlertAction!) -> Void in
             
             self.indicatorLabel.image = UIImage(named: "saved")

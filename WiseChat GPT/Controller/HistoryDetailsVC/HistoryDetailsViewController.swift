@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import AVFAudio
 
 var questionDetails = ""
 var answerDetails = ""
@@ -13,9 +14,19 @@ var answerDetails = ""
 class HistoryDetailsViewController: UIViewController {
 
     @IBOutlet weak var detailsTableView: UITableView!
+    @IBOutlet weak var indicatorImageView: UIImageView!
+    @IBOutlet weak var copyButton2: UIButton!
+    @IBOutlet weak var speakerButton2: UIButton!
+    @IBOutlet weak var shareButton2: UIButton!
+    @IBOutlet weak var speakerSilentButton: UIButton!
     
+    let synthesizer = AVSpeechSynthesizer()
+
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        indicatorImageView.isHidden = true
+        speakerSilentButton.isHidden = true
         setupDetailsTableViewCell()
     }
 
@@ -32,10 +43,59 @@ class HistoryDetailsViewController: UIViewController {
         detailsTableView.delegate = self
         detailsTableView.dataSource = self
     }
+    
+    func speak(_ text: String) {
+        let utterance = AVSpeechUtterance(string: text)
+        utterance.voice = AVSpeechSynthesisVoice(language: "en-AI")
+        synthesizer.speak(utterance)
+    }
+
 
     @IBAction func detailsBackButtonAction(_ sender: UIButton) {
         self.dismiss(animated: true, completion: nil)
     }
+    
+    @IBAction func speakerSilentButtonAction(_ sender: UIButton) {
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerSilentButton.isHidden = true
+            loadViewIfNeeded()
+        }
+    }
+    
+    @IBAction func DetailsTextSpeakerButton(_ sender: UIButton) {
+        synthesizer.stopSpeaking(at: .immediate)
+        UIView.animate(withDuration: 0.3){ [self] in
+            speakerSilentButton.isHidden = false
+            loadViewIfNeeded()
+        }
+        let text = "Question text: \(questionDetails)\n\nAnswer text: \(answerDetails)"
+        speak(text)
+        
+        self.indicatorImageView.image = UIImage(named: "SpeakerOn")
+        self.indicatorImageView.isHidden = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            self.indicatorImageView.isHidden = true
+        }
+    }
+    
+    @IBAction func DetailsTextCopyActionbutton(_ sender: UIButton) {
+        UIPasteboard.general.string = answerDetails
+        self.indicatorImageView.image = UIImage(named: "Copied")
+        self.indicatorImageView.isHidden = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            self.indicatorImageView.isHidden = true
+        }
+    }
+    
+    @IBAction func DetailsTextshareActionbutton(_ sender: UIButton) {
+        let questionText = "Question: \(questionDetails)\n\nAnswer: \(answerDetails)"
+        let shareAll = [questionText]
+        let activityViewController = UIActivityViewController(activityItems: shareAll as [Any], applicationActivities: nil)
+        activityViewController.popoverPresentationController?.sourceView = self.view
+        self.present(activityViewController, animated: true, completion: nil)
+    }
+    
 }
 
 

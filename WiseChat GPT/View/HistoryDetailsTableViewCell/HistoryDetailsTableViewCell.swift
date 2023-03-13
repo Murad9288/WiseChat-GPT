@@ -36,12 +36,11 @@ class HistoryDetailsTableViewCell: UITableViewCell {
             robotView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 10)
             
         } else if userLabel.text!.count < 150 && robotTextLabel.text!.count < 150 {
-            userView.roundCorners(corners: [.topRight, .bottomLeft, .topLeft], radius: 20)
-            robotView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 20)
-            
-        } else {
             userView.roundCorners(corners: [.topRight, .bottomLeft, .topLeft], radius: 15)
             robotView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 15)
+        } else {
+            userView.roundCorners(corners: [.topRight, .bottomLeft, .topLeft], radius: 20)
+            robotView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 20)
         }
     }
     

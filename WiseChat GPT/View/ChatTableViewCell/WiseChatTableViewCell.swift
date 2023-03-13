@@ -29,12 +29,13 @@ class WiseChatTableViewCell: UITableViewCell {
             userBGView.roundCorners(corners: [.topRight, .bottomLeft, .topLeft], radius: 10)
             chatAnswerbgcellView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 10)
         } else if userTextLabel.text!.count < 150 && wiseChatTextLabel.text!.count < 150 {
-            userBGView.roundCorners(corners: [.topRight, .bottomLeft, .topLeft], radius: 20)
-            chatAnswerbgcellView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 20)
-            
-        } else {
             userBGView.roundCorners(corners: [.topRight, .bottomLeft, .topLeft], radius: 15)
             chatAnswerbgcellView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 15)
+            
+        } else {
+            
+            userBGView.roundCorners(corners: [.topRight, .bottomLeft, .topLeft], radius: 20)
+            chatAnswerbgcellView.roundCorners(corners: [.topRight, .bottomRight, .topLeft], radius: 20)
         }
     }
     
